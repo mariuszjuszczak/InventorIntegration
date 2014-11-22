@@ -15,42 +15,42 @@ namespace InventorIntegration
 {
     public class InventorCamera
     {
-        private Inventor.Application _invApp = null;
+        private Inventor.Application invApp = null;
         private TransientGeometry oTG = null;
         private Camera oCamera = null;
         private Inventor.View oView = null;
-        private bool _started = false;
-        private bool _opened = false;
+        private bool started = false;
+        private bool opened = false;
         private string docType;
         private double DEG_TO_RAD = Math.PI / 180;
         public InventorCamera()
         {
-            if (_invApp == null)
+            if (invApp == null)
             {
                 try
                 {
-                    _invApp = (Inventor.Application)Marshal.GetActiveObject("Inventor.Application");
-                    _started = true;
+                    invApp = (Inventor.Application)Marshal.GetActiveObject("Inventor.Application");
+                    started = true;
                 }
                 catch (Exception ex)
                 {
-                    _started = false;
-                    _invApp = null;
+                    started = false;
+                    invApp = null;
                     return;
                 }
             }
-            if (_invApp.Documents.Count == 0)
+            if (invApp.Documents.Count == 0)
             {
-                _opened = false;
+                opened = false;
                 return;
             }
 
-            if (_invApp.ActiveDocument.DocumentType == DocumentTypeEnum.kAssemblyDocumentObject || _invApp.ActiveDocument.DocumentType == DocumentTypeEnum.kPartDocumentObject || _invApp.ActiveDocument.DocumentType == DocumentTypeEnum.kPresentationDocumentObject)
+            if (invApp.ActiveDocument.DocumentType == DocumentTypeEnum.kAssemblyDocumentObject || invApp.ActiveDocument.DocumentType == DocumentTypeEnum.kPartDocumentObject || invApp.ActiveDocument.DocumentType == DocumentTypeEnum.kPresentationDocumentObject)
             {
                 FindType();
-                _opened = true;
-                oView = _invApp.ActiveView;
-                oTG = _invApp.TransientGeometry;
+                opened = true;
+                oView = invApp.ActiveView;
+                oTG = invApp.TransientGeometry;
                 ReturnHome();
                 oCamera = oView.Camera;
             }
@@ -58,7 +58,7 @@ namespace InventorIntegration
 
         private void FindType()
         {
-            switch (_invApp.ActiveDocument.DocumentType)
+            switch (invApp.ActiveDocument.DocumentType)
             {
                 case DocumentTypeEnum.kAssemblyDocumentObject:
                     docType = "ASSEMBLY";
@@ -79,12 +79,12 @@ namespace InventorIntegration
 
         public bool IsOpened()
         {
-            return _opened;
+            return opened;
         }
 
         public bool IsStarted()
         {
-            return _started;
+            return started;
         }
 
         public void Zoom(double scale)
@@ -97,18 +97,18 @@ namespace InventorIntegration
 
         public void GetCurrentCamera()
         {
-            if (!_started)
+            if (!started)
             {
                 try
                 {
-                    _invApp = (Inventor.Application)Marshal.GetActiveObject("Inventor.Application");
-                    _started = true;
+                    invApp = (Inventor.Application)Marshal.GetActiveObject("Inventor.Application");
+                    started = true;
                 }
                 catch (Exception ex)
 
                 {
-                    _started = false;
-                    _invApp = null;
+                    started = false;
+                    invApp = null;
                     return;
                 }
             }
@@ -116,36 +116,37 @@ namespace InventorIntegration
             {
                 try
                 {
-                    if (_invApp.Documents.Count == 0)
+                    if (invApp.Documents.Count == 0)
                     {
-                        _opened = false;
+                        opened = false;
                         return;
                     }
-                    if (!_opened)
+                    if (!opened)
                     {
-                        if (_invApp.ActiveDocument.DocumentType == DocumentTypeEnum.kAssemblyDocumentObject || _invApp.ActiveDocument.DocumentType == DocumentTypeEnum.kPartDocumentObject || _invApp.ActiveDocument.DocumentType == DocumentTypeEnum.kPresentationDocumentObject)
+                        if (invApp.ActiveDocument.DocumentType == DocumentTypeEnum.kAssemblyDocumentObject || invApp.ActiveDocument.DocumentType == DocumentTypeEnum.kPartDocumentObject || invApp.ActiveDocument.DocumentType == DocumentTypeEnum.kPresentationDocumentObject)
                         {
                             FindType();
-                            oTG = _invApp.TransientGeometry;
-                            oView = _invApp.ActiveView;
+                            oTG = invApp.TransientGeometry;
+                            oView = invApp.ActiveView;
                             ReturnHome();
                             oCamera = oView.Camera;
-                            _opened = true;                       
+                            opened = true;                       
                         }
                     }
                     else
                     {
-                        oView = _invApp.ActiveView;
+                        oView = invApp.ActiveView;
                         oCamera = oView.Camera;
                     }
                 }
                 catch (Exception ex)
                 {
-                    _started = false;
-                    _opened = false;
+                    started = false;
+                    opened = false;
                 }
             }
         }
+
         public void ChangeView(double gyroY, double gyroX, double gyroZ, bool apply)
         {
             Inventor.Vector screenX = null;
